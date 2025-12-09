@@ -214,7 +214,7 @@ Workflow D透過GitHub Restful API呼叫Workflow A(在不同一個repo)
 
 Gemini answers:
 
-```
+
 這個呼叫鏈結合了 **原生調用 (`workflow_call`)** 和 **API 觸發 (`workflow_dispatch`)**，會導致一個 **無限循環 (Infinite Loop)**，並最終因為資源耗盡而被 GitHub 系統終止。🚨
 
 這是因為呼叫鏈中的最後一環 **成功地繞過了** GitHub 的原生遞迴檢查。
@@ -251,5 +251,5 @@ $$\text{Workflow D} \xrightarrow{\text{API Call}} \text{觸發一個全新的 Wo
 * **結果：** Workflow 將因為達到 **Actions 分鐘數限制**、**單一 Job 最大執行時間限制**，或被系統偵測到異常資源使用模式而**強制終止 (Terminate)**。
 
 **結論：** 這種混合模式是規避原生遞迴檢查的有效方式，但其最終結果是 Workflow 服務會終止執行以防止資源濫用。
-```
+
 
