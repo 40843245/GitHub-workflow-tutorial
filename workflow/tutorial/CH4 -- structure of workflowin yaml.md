@@ -1,4 +1,4 @@
-# CH4 -- explanation of workflow in yaml
+# CH4 -- structure of workflow in yaml
 ## objectives
 You will know
 
