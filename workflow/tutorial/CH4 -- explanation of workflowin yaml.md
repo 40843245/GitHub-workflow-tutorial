@@ -1,4 +1,4 @@
-# CH4 -- explanation of overflow in yaml
+# CH4 -- explanation of workflow in yaml
 ## objectives
 You will know
 
@@ -21,6 +21,7 @@ At `on` level
 | `pull_request` | `branches:` followed by a list of branch name (string type) | When one tries to commit a pull request to branches in the list, it will trigger the job | | 
 | `workflow_dispatch` | none | allow manually run the workflow on GitHub App | |
 | `schedule` | `-cron:` followed by a time quoated by single quotation | schedule the job that will be executed at specific time | cron syntax must be used here |
+| `workflow_call` | a blocking containing a list of input parameters | define the overflow is callable by others |
 
 At `jobs` level
 
