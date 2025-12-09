@@ -38,15 +38,16 @@ here, `<key>` is one key name under `jobs` level.
 | :-- | :-- | :-- | :-- |
 | `runs-on` | one of currently available environment (using enviroment name) | run the task on which environment | No double quotation and single quotation need for environment name | 
 | `steps` | including a block containing lots stpes | defines the task will execute which one or more steps | each step is seperatored by `-` (and MUST be followed a whitespace then `name` key).<br>See my table for more details |
+| `if` | 
 
 At `jobs-><key>->steps` level
 
 | key | value (or content) | description | notice |
 | :-- | :-- | :-- | :-- |
 | `name` | a descriptive name | a descriptive name that displays on Action Log | <li><ul>No double quotation and single quotation need for the descriptive name</ul><ul>You don't have to expand the descriptive name, thus name it descriptive is very helpful for us when tracking Action Log.</ul><ul>MUST be look like this `- name`</ul></li> | 
-| `uses` | other action name or workflow name | import and execute other action or workflow | No double quotation and single quotation need here |
+| `uses` | action name | import and execute **action** | No double quotation and single quotation need here |
 | `with` | a key-value pair where its value is the version number | which version will be installed or configured (or both)  | <li><ul>The `with` key MUST be used with `uses` tag.<br>And The `uses` key MUST be used with `with` tag if you need to specify the exact version number for installing and configuration.<br>Usually specifies the version number</ul><ul>the version number in the value **MUST be quotated with single quotation**</ul></li> |
-| `run` | a block containing a list of commands on Windows terminal | will run these commands  | <li><ul>To split commands into multiple line, it is needed to add `|` at the end of `run:`</ul><ul>No double quotation and single quotation here</ul><ul>seperated by new line</ul></li> | 
+| `run` | a list of commands (used on Windows terminal) | will run these **commands**  | <li><ul>To split commands into multiple line, it is needed to add `|` at the end of `run:`</ul><ul>No double quotation and single quotation here</ul><ul>seperated by new line</ul></li> | 
 
 
 ### Examples
