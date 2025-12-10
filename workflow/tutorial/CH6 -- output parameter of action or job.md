@@ -80,6 +80,7 @@ runs:
   using: 'composite'
   steps:
     - name: Run dotnet format (Apply or Check)
+      continue-on-error: true
       run: |
         if [ "${{ inputs.check-only }}" == "true" ]; then
           dotnet format --verify-no-changes --verbosity normal
@@ -153,6 +154,7 @@ runs:
   using: 'composite'
   steps:
     - name: Run dotnet format (Apply or Check)
+      continue-on-error: true
       run: |
         if [ "${{ inputs.check-only }}" == "true" ]; then
           dotnet format --verify-no-changes --verbosity normal
@@ -199,6 +201,7 @@ runs:
   # ...
   steps:
     - name: Run dotnet format (Apply or Check)
+      continue-on-error: true
       run: |
         if [ "${{ inputs.check-only }}" == "true" ]; then
           dotnet format --verify-no-changes --verbosity normal
@@ -210,7 +213,7 @@ runs:
 ```
 
   - 1th task has a brief and clear description `Run dotnet format (Apply or Check)`
-  - it will use `bash` when executing on a shell.
+  - it will use `bash` when executing script.
   - it will run these commands at `run` block.
   - these commands means if the input parameter named `check-only` is evaluated to `"true"`,
 
@@ -218,17 +221,111 @@ runs:
 
     otherwise, it will try to fix (apply changes using dotnet (`dotnet format`)
 
-    > [!NOTES]
-    > Executing `dotnet format --verify-no-changes --verbosity normal` will
-    >
-    > return success (exit code `0`) iff formatting changes or style changes are NOT needed.
-    >
-    > Otherwise, return failure (exit code non-zero number).
+  - `continue-on-error: true` indicates that when the execution failed (and thus returns exit code 0) during executing 1th task,
+  
+    the job will NOT be terminated.
 
-    > [!IMPORTANT]
-    > Executing `dotnet format` will try to fix changes using dotnet.
-    >
-    > When it successfully executed, it returns success (exit code), regradless whether changes are made or not.
+> [!NOTE]
+> Executing `dotnet format --verify-no-changes --verbosity normal` will
+>
+> return success (exit code `0`) iff formatting changes or style changes are NOT needed.
+>
+> Otherwise, return failure (exit code non-zero number).
+
+> [!IMPORTANT]
+> Executing `dotnet format` will try to fix changes using dotnet.
+>
+> When it successfully executed, it returns success (exit code), regradless whether changes are made or not.
      
++ In 2th task 
+
+```
+# ...
+runs:
+  using: 'composite'
+  steps:
+    # ...
+    - name: Generate Diff Output
+      id: check_diff # 設定步驟 ID 以便在 'outputs' 中引用
+      shell: bash
+      run: |
+        GIT_DIFF=$(git diff --exit-code --name-only || true)
+        
+        if [ -n "$GIT_DIFF" ]; then
+          echo "format_needed=true" >> $GITHUB_OUTPUT # 設定輸出參數的值
+          echo "## Formatting Changes Detected" >> $GITHUB_STEP_SUMMARY
+          git diff >> $GITHUB_STEP_SUMMARY
+          
+          # 獲取詳細的 diff 輸出作為另一個輸出參數
+          FULL_DIFF=$(git diff)
+          echo "diff_output<<EOF" >> $GITHUB_OUTPUT
+          echo "$FULL_DIFF" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          
+        else
+          echo "format_needed=false" >> $GITHUB_OUTPUT
+          echo "Code formatting is clean." >> $GITHUB_STEP_SUMMARY
+        fi
+```
+
+  - 2th task has a brief and clear description `Generate Diff Output`
+  - and its unique step ID is `check_diff`, you can use it in `outputs` block
+  - it will use `bash` when executing script.
+  - it will run these commands at `run` block.
+  - In 
+
+  ```
+  git diff --exit-code --name-only
+  ```
+
+  Description:
+  
+  Git will check there is any uncommitted files changes (through `git diff` command)
+
+  The `--name-only` will ONLY list of name of file changes rather than list of file changes.
+  
+  The `--exit-code` option handles STO (Standard Output) returned by `git diff --name-only`, returning EC (Exit Code)
+
+  > [!NOTE]
+  > relationship of STO and EC
+  >    
+  > | STO | EC |
+  > | :-- | :-- |
+  > | empty string | 0 |
+  > | non-empty string | 1 |
+  
+  Let's analyze some situation that happens in real world.
+  
+  Case 1: If there are no uncommitted file changes
+  
+  It happens when
+
+    * Case A.1: `check-only` is evaluated to false and thus no execution of `dotnet format`.
+
+    * Case A.2: `check-only` is evaluated to true, but during execution of `dotnet format` and before changes file, an exception is thrown, so not to continue execute this command.
+
+  Then Git will detect no uncommitted file changes and 
+  
+  `git diff --exit-code --name-only` command will return an empty string (when this command successfully executed)
+
+  Case 2: If there are uncommitted file changes
+
+    It happens when
+
+    * Case B.1: `check-only` is evaluated to true and executes `dotnet format` successfully. Additionally, this commands changes code and successfully save changes. 
     
+    In this case, it will return exit code 0.
+
+    * Case B.2: `check-only` is evaluated to true. The execution of `dotnet format` failed, but this commands changes code and successfully save changes.
+
+    In this case, it will return exit code 1.
+
+  Then Git will detect some uncommitted file changes and 
+  
+  `git diff --exit-code --name-only` command will return a list of name of uncommitted files changes (when this command successfully executed)
+
+  Case 3:
+  
+  
     
+  
