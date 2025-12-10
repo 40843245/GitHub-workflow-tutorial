@@ -8,7 +8,7 @@ You will know how to
 ## CH6-1 -- return a value
 ### CH6-1-1 return a value in an action
 #### In Docker container Workflow (commonly used)
-Echo the output parameter name and its value (represented as a key-value pair `<output-parameter-name>=<returned-value>`) to a `GitHub Actions `$GITHUB_OUTPUT`
+Echo the output parameter name and its value (represented as a key-value pair `<output-parameter-name>=<returned-value>`) to a `GitHub-Provided Special File Path Variable` -- `$GITHUB_OUTPUT`
 
 Format:
 
@@ -34,3 +34,8 @@ and
 > However, the key-value pair is one part of value of the field.
 >
 > NOT related to this.  
+
+> [!IMPORTANT]
+> Always echo key-value pair to `$GITHUB_OUTPUT`.
+>
+> Otherwise, when accessing it, you will get `NULL` or empty string, leading unexpected behaviour.
