@@ -272,59 +272,74 @@ runs:
   - and its unique step ID is `check_diff`, you can use it in `outputs` block
   - it will use `bash` when executing script.
   - it will run these commands at `run` block.
-  - In 
 
-  ```
-  git diff --exit-code --name-only
-  ```
-
-  Description:
+    <details>
+    <summary>Analysis of `Ggit diff --exit-code --name-only`</summary>
+    Description:
   
-  Git will check there is any uncommitted files changes (through `git diff` command)
-
-  The `--name-only` will ONLY list of name of file changes rather than list of file changes.
+    Git will check there is any uncommitted files changes (through `git diff` command)
   
-  The `--exit-code` option handles STO (Standard Output) returned by `git diff --name-only`, returning EC (Exit Code)
-
-  > [!NOTE]
-  > relationship of STO and EC
-  >    
-  > | STO | EC |
-  > | :-- | :-- |
-  > | empty string | 0 |
-  > | non-empty string | 1 |
-  
-  Let's analyze some situation that happens in real world.
-  
-  Case 1: If there are no uncommitted file changes
-  
-  It happens when
-
-    * Case A.1: `check-only` is evaluated to false and thus no execution of `dotnet format`.
-
-    * Case A.2: `check-only` is evaluated to true, but during execution of `dotnet format` and before changes file, an exception is thrown, so not to continue execute this command.
-
-  Then Git will detect no uncommitted file changes and 
-  
-  `git diff --exit-code --name-only` command will return an empty string (when this command successfully executed)
-
-  Case 2: If there are uncommitted file changes
-
-    It happens when
-
-    * Case B.1: `check-only` is evaluated to true and executes `dotnet format` successfully. Additionally, this commands changes code and successfully save changes. 
+    The `--name-only` will ONLY list of name of file changes rather than list of file changes.
     
-    In this case, it will return exit code 0.
-
-    * Case B.2: `check-only` is evaluated to true. The execution of `dotnet format` failed, but this commands changes code and successfully save changes.
-
-    In this case, it will return exit code 1.
-
-  Then Git will detect some uncommitted file changes and 
+    The `--exit-code` option handles STO (Standard Output) returned by `git diff --name-only`, returning EC (Exit Code)
   
-  `git diff --exit-code --name-only` command will return a list of name of uncommitted files changes (when this command successfully executed)
+    > [!NOTE]
+    > relationship of STO and EC
+    >    
+    > | STO | EC |
+    > | :-- | :-- |
+    > | empty string | 0 |
+    > | non-empty string | 1 |
+    
+    Let's analyze some situation that happens in real world.
+    
+    Case 1: If there are no uncommitted file changes
+    
+    It happens when
+  
+      * Case A.1: `check-only` is evaluated to false and thus no execution of `dotnet format`.
+  
+      * Case A.2: `check-only` is evaluated to true, but during execution of `dotnet format` and before changes file, an exception is thrown, so not to continue execute this command.
+  
+    Then Git will detect no uncommitted file changes and 
+    
+    `git diff --exit-code --name-only` command will return an empty string (when this command successfully executed)
+  
+    Case 2: If there are uncommitted file changes
+  
+      It happens when
+  
+      * Case B.1: `check-only` is evaluated to true and executes `dotnet format` successfully. Additionally, this commands changes code and successfully save changes. 
+      
+      In this case, it will return exit code 0.
+  
+      * Case B.2: `check-only` is evaluated to true. The execution of `dotnet format` failed, but this commands changes code and successfully save changes.
+  
+      In this case, it will return exit code 1.
+  
+    Then Git will detect some uncommitted file changes and 
+    
+    `git diff --exit-code --name-only` command will return a list of name of uncommitted files changes (when this command successfully executed)
+  
+    Case 3: This command executes failed.
+  
+    Then it will return exit code 1 (due to exception during execution), and terminate the task.
 
-  Case 3:
+    </details>
+    
+    <details>
+    <summary>Analysis of `GIT_DIFF=$(git diff --exit-code --name-only || true)`</summary>
+      
+    </details>
+  
+ 
+  <p>However</p>
+  
+  
+
+  
+
+
   
   
     
