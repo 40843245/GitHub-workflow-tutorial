@@ -38,7 +38,11 @@ here, `<key>` is one key name under `jobs` level.
 | :-- | :-- | :-- | :-- |
 | `runs-on` | one of currently available environment (using enviroment name) | run the task on which environment | No double quotation and single quotation need for environment name | 
 | `steps` | including a block containing lots stpes | defines the task will execute which one or more steps | each step is seperatored by `-` (and MUST be followed a whitespace then `name` key).<br>See my table for more details |
-| `if` | 
+| `if` | one or more conditions | If the conditions are evaluated true, it will continue to execute the job. Otherwise, it will terminate the job. | <li><ul>The conditions MUST be placed at same line as `if:`</ul></li> |
+| `timeout-minutes` | a postive integer | set the maximum execution time limit of job | <li><ul>The unit is one minute</ul></li> |
+| ‵outputs` | a variable or an instance, or an expression consists of them that can be evaluated to a value | returns returned value on job used for other job in this workflow | its usage is same as `outputs` in action, see table in CH5 for more details. | 
+| `needs` | a job name or a list containing job name | depends on the list of job.<br>After all jobs in the list are executed successfully, the job (that uses `needs` field) will be executed. Otherwise, it will NOT be executed | |
+
 
 At `jobs-><key>->steps` level
 
