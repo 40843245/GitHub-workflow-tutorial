@@ -40,9 +40,37 @@ and
 > NOT related to this.  
 
 > [!IMPORTANT]
-> Always echo key-value pair to `$GITHUB_OUTPUT`.
+> Always redirect key-value pair out into `$GITHUB_OUTPUT`.
 >
 > Otherwise, when accessing it, you will get `NULL` or empty string, leading unexpected behaviour.
+
+> [!IMPORTANT]
+> To redirect key-value pair out into `$GITHUB_OUTPUT`,
+>
+> The seperator of key-value pair MUST be one of `=` and `<<`
+>
+> `=`: just redirects ones (in one command) to the key (output parameter name) 
+>
+> `<<`: tells that redirects multiple line (in many commands) to the key (output parameter name)
+>
+> After executing one command about redirecting, it will automatically add a new break line after this line, before executing the next command.
+>
+> In this case, one MUST append a name as seperator after `<<`, marking the starting point of the redirect
+>
+> and MUST just simply redirect the name at the end, marking the end point of the redirect
+
+> [!TIP]
+> To understand why we need to do such thing when redirecting using `<<` as separator.
+>
+> You can image a situation.
+>
+> After open an uncorrupted PDF with NotePad++.
+>
+> You will see `%PDF-<version>` at the beginning of PDF content and `%%EOF` at the end of PDF content.
+>
+> The main purpose is that PDF reader recognizes it is an uncorrepted PDF.
+>
+> See following example for more details.  
 
 > [!Important]
 > The output parameter ONLY can map or forward internal final result (making it external and thus can be used in others)
