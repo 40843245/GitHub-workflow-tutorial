@@ -149,10 +149,10 @@ You MUST use the relative path.
 
 The starting point of the relative path is
 
-| scenario | caller | starting point of the relative path |
+| scenario | caller | starting point of the relative path (referenced from) | end point (referenced to)|
 | :-- | :-- | :-- |
-| a workflow imports an action | workflow | root directory of current repo | 
-| a composite action imports an action | a composite action | current working directory (directory of caller) | 
+| a workflow imports a composite action | workflow | root directory of current repo | directory of the file that defines the composite action |
+| an action imports a composite action | a composite action | current working directory (**directory of caller**) (**NOT the file path of callee**) | directory of the file that defines the composite action |
 
 > [!NOTE]
 > In this scenario -- a workflow imports an action,
@@ -181,8 +181,134 @@ The starting point of the relative path is
 >
 > **NOT** from **root directory of current repo**.
 
+## CH6-5 -- valid path of an action or a workflow
+### workflow
+For a workflow,
 
-## CH6-5 
++ the file MUST have extension `.yml`
++ the file MUST be placed under `./.github/workflows/` directory
 
-### Examples
-#### Example 1
+  where
+
+  again, `.` means the root directory of current repo.
+
+### composite action
+For a composite action,
+
+The file name MUST be **`action.yml`** (commonly used) or **`action.json`**.
+
+It is NOT required but it's a convention (that is highly recommend mentioned in offical docs) that
+
+  it is placed under `./github/actions/` directory.
+
+> [!IMPORTANT]
+> The reason why a composite action MUST be **`action.yml`** (commonly used) or **`action.json`**.
+>
+> The `uses` field in `steps` field in `runs` field (`runs`->`steps`->`uses`) can be correctly parsed by the GitHub Action engine.
+>
+> Only in `action.yml` or `action.json`, the `uses` field can be recognized by GitHub Action engine. 
+
+`action.yml`
+
+```
+# 只有在 action.yml 中，這個結構才有效
+runs:
+  using: "composite"  # 告訴 Runner 這是一個多步驟的 Action
+  steps:
+    - uses: actions/checkout@v4  # 步驟 1: 引用一個 Action
+    - uses: ../another-action    # 步驟 2: 引用另一個 Action
+    - run: echo "Done"           # 步驟 3: 執行 Shell 命令
+```
+ 
+`action.json`
+
+```
+"runs":{
+  "using": "composite",
+  "steps":[
+      "uses": "actions/checkout@v4" 
+      "uses": "../another-action"    
+      "run": "echo \"Done\""
+  ]
+}
+```
+
+## Examples (A collection of big examples as summary)
+### Example 1
+Assume that structure of a repo is 
+
+```
+repoA/ (root directory of current repo)
+├── .github/
+│   ├── actions/
+│   │   └── trash-tool/
+│   │       ├── trash-cleaner/      <-- Caller Action (action.yml)
+│   │       │   └── action.yml      
+│   │       └── trash-finder/       <-- Called Action (action.yml)
+│   │           └── action.yml      
+│   └── workflows/
+│       └── main.yml                <-- Workflow (Caller)
+└── src/
+```
+
+Scenario 1: a workflow imports a composite action
+
+In a workflow `main.yml` (caller), you want to call the composite action `trash-cleaner/action.yml` (callee).
+
+You have to uses the relative path `./.github/actions/trash-tool/trash-cleaner`,
+
+since the caller is a workflow, it references from **root directory of current repo**.
+
+structure:
+
+```
+# repoA/.github/workflows/main.yml
+name: Main CI
+
+on: [push]
+
+jobs:
+  run_cleaner:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      # 引用路徑：從 repoA 根目錄 (./) 開始計算
+      - name: Run Trash Cleaner Tool
+        uses: ./.github/actions/trash-tool/trash-cleaner
+```
+
+Scenario 2: an action imports a composite action
+
+In an action `trash-cleaner/action.yml` (caller), you want to call the composite action `trash-finder/action.yml` (callee).
+
+You have to uses the relative path `../trash-finder`,
+
+since the caller is an action, it references from **directory of caller** (here is `trash-cleaner/`).
+
+Calculate it from starting point `trash-cleaner/`
+
+=> its parent directory is `trash-tool/`
+
+=> it has a child directory name `trash-finder` which places `trash-finder/action.yml`,
+
+So, the relative path is `../trash-finder`
+
+structure:
+
+```
+# repoA/.github/actions/trash-tool/trash-cleaner/action.yml
+name: Trash Cleaner
+
+runs:
+  using: "composite"
+  steps:
+    - name: Find Trash First
+      # 引用路徑：從 trash-cleaner/ 目錄開始計算 (向上退一層到 trash-tool/，再進入 trash-finder/)
+      uses: ../trash-finder
+      
+    - name: Run Actual Cleaning
+      run: echo "Cleaning using the results from trash-finder"
+      shell: bash
+```
+
