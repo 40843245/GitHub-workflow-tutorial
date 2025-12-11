@@ -10,7 +10,7 @@ You will know how to
 #### In Composite run action
 To return a value.
 
-it is need to echo the final result (represented as a key-value pair `<output-parameter-name>=<returned-value>`) to a `GitHub-Provided Special File Path Variable` -- `$GITHUB_OUTPUT`
+it is need to echo the final result (represented as a key-value pair `<output-parameter-name>=<returned-value>`) to a GitHub-Provided Special File Path Variable -- `$GITHUB_OUTPUT`
 
 then fetches the internal final result as returned value in `value` field.
 
@@ -38,6 +38,15 @@ and
 > However, the key-value pair is one part of value of the field.
 >
 > NOT related to this.  
+
+> [!IMPORTANT]
+> The output parameter ONLY can map or forward internal final result (making it external and thus can be used in others)
+>
+> The output parameter can't simply return `$GITHUB_OUTPUT`.
+>
+> So, in a composite run action, it is needed to echo the final result (represented as a key-value pair) to `$GITHUB_OUTPUT`,
+>
+> then fetch the internal final result and return it in `value` field.
 
 > [!IMPORTANT]
 > Always redirect key-value pair out into `$GITHUB_OUTPUT`.
@@ -72,14 +81,8 @@ and
 >
 > See following example for more details.  
 
-> [!Important]
-> The output parameter ONLY can map or forward internal final result (making it external and thus can be used in others)
->
-> The output parameter can't simply return `$GITHUB_OUTPUT`.
->
-> So, in a composite run action, it is needed to echo the final result (represented as a key-value pair) to `$GITHUB_OUTPUT`,
->
-> then fetch the internal final result and return it in `value` field.
+> [!IMPORTANT]
+> The start delimiter MUST be same as end delimiter for redirecting message out into buffer of a GitHub-Provided Special File Path Variable -- `$GITHUB_OUTPUT`.
 
 ##### Examples
 ###### Example 1
@@ -325,6 +328,8 @@ runs:
 >
 > Otherwise, returns boolean false.
 
+> [!NOTE]
+> 
 <details>
 <summary>Analysis of `git diff --exit-code --name-only`</summary>
 Description:
@@ -492,7 +497,13 @@ Additionally, it writes the uncommitted file changes into the buffer of Github-p
 
 + it redirects `diff_output<<EOF` out into the buffer of Github-provided special path variable `$GITHUB_OUTPUT`.
 
+It tells multiple line will be redirected.
 
-Here, `diff_output` is the one output parameter name of output parameters and it sets to string `EOF`. 
+Here, `diff_output` is the one output parameter name of output parameters and its starting delimiter is `EOF`.
 
++ Then it redirects the uncommitted file changes (stored in variable `$FULL_DIFF`) out into the buffer of Github-provided special path variable `$GITHUB_OUTPUT`.
+
++ After that, it redirects the end delimiter `EOF` out into the buffer of Github-provided special path variable `$GITHUB_OUTPUT`, finishing writing data to the diff_output parameter.
+
+Overall, it writes the uncommitted file changes as log message into `diff_output` output parameter.
 </details>
