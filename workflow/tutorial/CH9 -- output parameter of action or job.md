@@ -1,12 +1,12 @@
-# CH6 -- output parameter of action or job
+# CH9 -- output parameter of action or job
 ## objectives
 You will know how to 
   
   + return a value in an action or a job
   + receive or access the returned value returned by an action or a job
 
-## CH6-1 -- return a value
-### CH6-1-1 return a value in an action
+## CH9-1 -- return a value
+### CH9-1-1 return a value in an action
 #### In Composite run action
 To return a value.
 
