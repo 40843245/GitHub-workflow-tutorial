@@ -273,16 +273,6 @@ runs:
   - it will use `bash` when executing script.
   - it will run these commands at `run` block.
 
-<details>
-<summary>Analysis of `Ggit diff --exit-code --name-only`</summary>
-Description:
-  
-Git will check there is any uncommitted files changes (through `git diff` command)
-  
-The `--name-only` will ONLY list of name of file changes rather than list of file changes.
-
-The `--exit-code` option handles STO (Standard Output) returned by `git diff --name-only`, returning EC (Exit Code)
-  
 > [!NOTE]
 > relationship of STO and EC
 >
@@ -291,22 +281,52 @@ The `--exit-code` option handles STO (Standard Output) returned by `git diff --n
 > | empty string | 0 |
 > | non-empty string | 1 |
 
+> [!TIP]
+> In `Bash`, `[ xxx ]` checks whether xxx is an empty string, or not.
+>
+> If it is, then returns boolean true.
+>
+> Otherwise, returns boolean false.   
+
+> [!TIP]
+> In `Bash`, `-n` in `[]` means negate.
+>
+> So, `[ -n xxx ]` checks whether xxx is NOT an empty string, or not.
+>
+> If it is NOT an empty string, returns boolean true.
+>
+> Otherwise, returns boolean false.
+
+<details>
+<summary>Analysis of `git diff --exit-code --name-only`</summary>
+Description:
+  
+Git will check there is any uncommitted files changes (through `git diff` command)
+  
+The `--name-only` will ONLY list of name of file changes rather than list of file changes.
+
+The `--exit-code` option handles STO (Standard Output) returned by `git diff --name-only`, returning EC (Exit Code)
+  
 Let's analyze some situation that happens in real world.
 
 Case 1: If there are no uncommitted file changes
+  
+=> Git will detect no uncommitted file changes 
 
-It happens when
+=> `git diff --exit-code --name-only` command will return an empty string (when this command successfully executed)
+
+  It happens when
   
   * Case A.1: `check-only` is evaluated to false and thus no execution of `dotnet format`.
   
   * Case A.2: `check-only` is evaluated to true, but during execution of `dotnet format` and before changes file, an exception is thrown, so not to continue execute this command.
-  
-Then Git will detect no uncommitted file changes and 
-
-`git diff --exit-code --name-only` command will return an empty string (when this command successfully executed)
-  
+    
 Case 2: If there are uncommitted file changes
   
+=> Git will detect some uncommitted file changes 
+
+=> `git diff --exit-code --name-only` command will return a list of name of uncommitted files changes when this command successfully executed
+
   It happens when
   
   * Case B.1: `check-only` is evaluated to true and executes `dotnet format` successfully. Additionally, this commands changes code and successfully save changes. 
@@ -317,19 +337,47 @@ Case 2: If there are uncommitted file changes
   
   In this case, it will return exit code 1.
   
-Then Git will detect some uncommitted file changes and 
-
-`git diff --exit-code --name-only` command will return a list of name of uncommitted files changes (when this command successfully executed)
-  
 Case 3: This command executes failed.
   
-Then it will return exit code 1 (due to exception during execution), and terminate the task.
+=> `git diff --exit-code --name-only` will return exit code 1 (due to exception during execution), and terminate the task.
 
 </details>
 
 <details>
 <summary>Analysis of `GIT_DIFF=$(git diff --exit-code --name-only || true)`</summary>
+
+Case 1: If there are no uncommitted file changes
   
+=> Git will detect no uncommitted file changes 
+
+=> `git diff --exit-code --name-only` command will return an empty string (when this command successfully executed)
+
+=> So the right-hand side of expression `git diff --exit-code --name-only || true` will NOT be executed, returning the left-hand of the expression
+
+=> `GIT_DIFF` variable stores an empty string.
+
+Case 2: If there are uncommitted file changes
+  
+=> Git will detect some uncommitted file changes 
+
+=> `git diff --exit-code --name-only` command will return a list of name of uncommitted files changes when this command successfully executed
+
+=> So the right-hand side of expression `git diff --exit-code --name-only || true` will NOT be executed, returning the left-hand of the expression
+
+=> `GIT_DIFF` variable stores a list of name of uncommitted files changes.
+  
+Case 3: This command executes failed.
+  
+=> `git diff --exit-code --name-only` will return exit code 1 (due to exception during execution)
+
+=> However, due to the short-circuit feature, the right-hand sid of expression `git diff --exit-code --name-only || true` will be executed, returning the right-hand of the expression, which is 0 (meaning the boolean true).
+
+=> `GIT_DIFF` variable stores the number 0.
+
+</details>
+
+<details>
+<summary>Analysis of `if` condition</summary>  
 </details>
   
  
