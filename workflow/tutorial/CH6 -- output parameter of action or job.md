@@ -84,6 +84,30 @@ and
 > [!IMPORTANT]
 > The start delimiter MUST be same as end delimiter for redirecting message out into buffer of a GitHub-Provided Special File Path Variable -- `$GITHUB_OUTPUT`.
 
+> [!NOTE]
+> relationship of STO and EC
+>
+> | STO | EC |
+> | :-- | :-- |
+> | empty string | 0 |
+> | non-empty string | 1 |
+
+> [!TIP]
+> In `Bash`, `[ xxx ]` checks whether xxx is an empty string, or not.
+>
+> If it is, then returns boolean true.
+>
+> Otherwise, returns boolean false.   
+
+> [!TIP]
+> In `Bash`, `-n` in `[]` means negate.
+>
+> So, `[ -n xxx ]` checks whether xxx is NOT an empty string, or not.
+>
+> If it is NOT an empty string, returns boolean true.
+>
+> Otherwise, returns boolean false.
+
 ##### Examples
 ###### Example 1
 
@@ -304,32 +328,9 @@ runs:
   - it will use `bash` when executing script.
   - it will run these commands at `run` block.
 
-> [!NOTE]
-> relationship of STO and EC
->
-> | STO | EC |
-> | :-- | :-- |
-> | empty string | 0 |
-> | non-empty string | 1 |
-
-> [!TIP]
-> In `Bash`, `[ xxx ]` checks whether xxx is an empty string, or not.
->
-> If it is, then returns boolean true.
->
-> Otherwise, returns boolean false.   
-
-> [!TIP]
-> In `Bash`, `-n` in `[]` means negate.
->
-> So, `[ -n xxx ]` checks whether xxx is NOT an empty string, or not.
->
-> If it is NOT an empty string, returns boolean true.
->
-> Otherwise, returns boolean false.
-
-> [!NOTE]
-> 
+<details>
+<summary>Analysis of `run` block of 2th task</summary>
+  
 <details>
 <summary>Analysis of `git diff --exit-code --name-only`</summary>
 Description:
@@ -506,4 +507,92 @@ Here, `diff_output` is the one output parameter name of output parameters and it
 + After that, it redirects the end delimiter `EOF` out into the buffer of Github-provided special path variable `$GITHUB_OUTPUT`, finishing writing data to the diff_output parameter.
 
 Overall, it writes the uncommitted file changes as log message into `diff_output` output parameter.
+</details>
+
+</details>
+
+<details>
+<summary>Analysis of `else` block</summary>
+
+```
+        # ...
+        if [ -n "$GIT_DIFF" ]; then
+          # ...          
+        else
+          echo "format_needed=false" >> $GITHUB_OUTPUT
+          echo "Code formatting is clean." >> $GITHUB_STEP_SUMMARY
+        fi  
+```
+
++ It redirects the key-value pair `format_needed=false` out into the buffer of Github-provided special path variable `$GITHUB_OUTPUT`, 
+
+Here, `format_need` is the one output parameter name of output parameters and it sets to string `false`. 
+
++ Then It redirects message `Code formatting is clean.` out into the buffer of Github-provided special step summary variable `$GITHUB_STEP_SUMMARY`,
+
+displaying message `Code formatting is clean.` at the top of Action Log.
+ 
+</details>
+
+Overall,
+
+Case 1: If uncommitted file changes are detected by Git and it executes successfully
+
+Assuming `git diff` returns 
+
+```
+Index: fileA.cs\n--- line 1\n+++ line 2\n
+```
+
+=> It will execute the `then` block.
+
+=> Thus, it will sets the `format_need` to string `true` 
+
+and `diff_output` to
+
+```
+EOF
+Index: fileA.cs
+--- line 1
++++ line 2
+EOF
+```
+
+that will be used on other action or job later.
+
+=> Lastly, it writes the message 
+
+```
+## Formatting Changes Detected
+Index: fileA.cs
+--- line 1
++++ line 2
+```
+
+to step summary file that will be displayed at the top of Action Log.
+
+Case 2: If no uncommitted file changes are detected by Git and it executes successfully (i.e. `git diff` returns an empty string)
+
+=> It will execute the `else` block.
+
+=> Thus, it will sets the `format_need` to string `false` 
+
+that will be used on other action or job later.
+
+=> Lastly, simply writes the message
+
+```
+Code formatting is clean.
+```
+
+to step summary file that will be displayed at the top of Action Log.
+
+Case 3: If executing `git diff` command failed, 
+
+=> due to `|| true` on `git diff --exit-code --name-only || true` command, the `$GIT_DIFF` stores true.
+
+=> Thus, executing `else` block (since boolean true is NOT considered as an empty string)
+
+=> ... do samething in Case 1 (it has been analyzed, so skip it)
+
 </details>
