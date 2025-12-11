@@ -10,24 +10,104 @@ You will know how to
 #### In Composite run action
 To return a value.
 
-it is need to echo the final result (represented as a key-value pair `<output-parameter-name>=<returned-value>`) to a GitHub-Provided Special File Path Variable -- `$GITHUB_OUTPUT`
+it is need to redirect the final result (represented as a key-value pair) out into a GitHub-Provided Special File Path Variable -- `$GITHUB_OUTPUT`
 
-then fetches the internal final result as returned value in `value` field.
+then fetches the internal final result from the GitHub-Provided Special File Path Variable -- `$GITHUB_OUTPUT` as returned value (in `value` field of output parameter).
 
-Format:
-
+<details>
+<summary>redirect the final result out into a GitHub-Provided Special File Path Variable -- `$GITHUB_OUTPUT`</summary>
+  
 ```
-echo "<output-parameter-name>=<returned-value>" >> $GITHUB_OUTPUT
+echo "<internal-output-parameter-name>=<returned-value>" >> $GITHUB_OUTPUT
 ```
 
 where 
 
-`<output-parameter-name>` is the output parameter name. It will be used when accessing the returned value.
+`<internal-output-parameter-name>` is the output parameter name ONLY used internally for returning value . It will be used when accessing the returned value.
 
 and
 
 `<returned-value>` is the returned value of the action.
 
+</details>
+
+<details>
+<summary>fetch the internal final result from the GitHub-Provided Special File Path Variable -- `$GITHUB_OUTPUT`</summary>
+  
+```
+outputs:
+  <output-parameter-name>:
+      # ... `description` omitted
+      value: ${{ steps.<run-id>.outputs.<internal-output-parameter-name> }} # returns `<internal-returned-value>`
+runs:
+  using: 'composite'
+  steps:
+    - name: <descriptive-name>
+      id:<run-id>
+      run:
+        # ... omitted
+        echo "<internal-output-parameter-name>=<internal-returned-value>" >> $GITHUB_OUTPUT
+        # ... omitted
+```
+
+where 
+
+`<internal-output-parameter-name>` is the output parameter name **ONLY used internally** for **returning value** . It will be used when accessing the returned value,
+
+`<returned-value>` is the returned value of the action.
+
+`<run-id>` is an unique id that will be recognize by GitHub Action.
+
+`<output-parameter-name>` is the output parameter used **externally** when accessing it **after the action call**.
+
+> [Thinking]
+>
+> Q1:Why needs to access the property through `steps.<run-id>.outputs.<internal-output-parameter-name>`?
+>
+> A1:
+>
+> Let's understand it gradually by explaining how to access this property from top to down. 
+>
+> Because
+>
+> 1. In an action, to access a property, MUST find it from the top level of `runs` (which defines a collection of run, or an action).
+> 2. Look at structure inside `runs` block carefully, you will see that
+>
+>    + `runs`->`steps`: `steps` field is a field of `runs`, so needs to write `steps`
+>    + an unique id of a run (which is separated by `-` in `steps` block), so needs to access the unique id of a run through `steps.<run-id>`
+>
+> 3. Since the output parameter is defined in `outputs` block, so needs to write `steps.<run-id>.outputs` 
+>
+> 4. Since `$GITHUB_OUTPUT` stores the mapping table of returning
+>
+>    where in each key-value pair, its key is name for returning value and its value is the return value.
+>
+>    So, needs to write `steps.<run-id>.outputs.<internal-output-parameter-name>` (`<internal-output-parameter-name>` corresponds to `<internal-output-parameter-name>` in this command `echo "<internal-output-parameter-name>=<internal-returned-value>" >> $GITHUB_OUTPUT`)
+>
+> Then it will return `<internal-returned-value>`.
+
+> [Thinking]
+>
+> Q2:Which value will be returned?
+>
+> A2:
+>
+> `<internal-returned-value>` corresponding to `<internal-output-parameter-name>` in this command `echo "<internal-output-parameter-name>=<internal-returned-value>" >> $GITHUB_OUTPUT`
+
+> [Thinking]
+>
+> Q3:Why needs to wrap the property with `${{}}` around when accessing it?
+>
+> A3:
+>
+> As an expression MUST be placed in `${{}}` (of course, for a property that is NOT directly defined in the action, as it is a kind of an expression).
+>
+> See previous Chapter for more details.
+
+</details>
+
+
+Then 
 > [!IMPORTANT]
 > Since we have to write the key-value pair to a variable,
 >
