@@ -378,16 +378,93 @@ Case 3: This command executes failed.
 
 <details>
 <summary>Analysis of `if` condition</summary>  
+
+```
+if [ -n "$GIT_DIFF" ];
+```
+
+It will check there is the variable `$GIT_DIFF` is NOT an empty string,
+
+If it is, it will execute `then` block.
+
+Otherwise, it will execute the `else` block.
+
 </details>
-  
- 
-  
-  
 
-  
+<details>
+<summary>Analysis of `then` block</summary>
+
+```
+     # ...
+     if [ -n "$GIT_DIFF" ]; then
+          echo "format_needed=true" >> $GITHUB_OUTPUT # 設定輸出參數的值
+          echo "## Formatting Changes Detected" >> $GITHUB_STEP_SUMMARY
+          git diff >> $GITHUB_STEP_SUMMARY
+          
+          # 獲取詳細的 diff 輸出作為另一個輸出參數
+          FULL_DIFF=$(git diff)
+          echo "diff_output<<EOF" >> $GITHUB_OUTPUT
+          echo "$FULL_DIFF" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+    else
+      # ...
+    fi
+```
+
+Let's break them into two parts.
+
+<details>
+<summary>Part 1-- Analysis of `formatted_need`</summary>
+
+```
+# ...
+     if [ -n "$GIT_DIFF" ]; then
+          echo "format_needed=true" >> $GITHUB_OUTPUT # 設定輸出參數的值
+          echo "## Formatting Changes Detected" >> $GITHUB_STEP_SUMMARY
+          git diff >> $GITHUB_STEP_SUMMARY
+          # ...
+    else
+      # ...
+    fi
+```
+
++ It redirects the key-value pair `format_needed=true` out into the buffer of Github-provided special path variable `$GITHUB_OUTPUT`, 
+
+(which used in output parameter).
+
+Here, `format_need` is the one output parameter name of output parameters and it sets to string `true`. 
+
++ Then it redirects `## Formatting Changes Detected` out into the buffer of Github-provided step summary file.
+
++ Then it redirects uncommitted file changes (`git diff`) out into the buffer of Github-provided step summary file.
+
+Overall, the output parameter `formatted_need` is set to true (stored in buffer of Github-provided special path variable `$GITHUB_OUTPUT`), for returning.
+
+Additionally, it writes the uncommitted file changes into the buffer of Github-provided step summary file, which displayed on top of Action Log, for logging.
+
+</details>
+
+<details>
+<summary>Part 2-- Analysis of `diff_output`</summary>
+
+```
+     # ...
+     if [ -n "$GIT_DIFF" ]; then
+          # ...
+          
+          # 獲取詳細的 diff 輸出作為另一個輸出參數
+          FULL_DIFF=$(git diff)
+          echo "diff_output<<EOF" >> $GITHUB_OUTPUT
+          echo "$FULL_DIFF" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+    else
+      # ...
+    fi
+```
+
++ it redirects `diff_output<<EOF` out into the buffer of Github-provided special path variable `$GITHUB_OUTPUT`.
 
 
-  
-  
-    
-  
+Here, `diff_output` is the one output parameter name of output parameters and it sets to string `EOF`. 
+
+</details>
