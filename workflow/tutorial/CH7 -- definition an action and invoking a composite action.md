@@ -104,4 +104,56 @@ Each run has fields
   + with: passes the argument (corresponding to the action you want to import) with value.
   + shell: determines which CLI of shell will be used on this run.
   + id: defines a unique id so that it can be as a property used internally (for example, in output parameter (see CH9 for more details))
-  + 
+  + run: commands that will be executed on the shell.
+
+> [!TIP]
+> You can think that assignning `id` field to a unique id value defines a property named the unique id, used for reflection.
+
++ mapping tables for matching
+
+| field | needed to use a field together? | which field needed to be used | description | notes |
+| :-- | :-- | :-- | :-- | :-- |
+| `uses` | In some case, `use` fields is needed to use `with` field together | `with` | import the action (specified by `uses` field) with passing these argument (specified by `with` field)| According to the definition of the action you want to import |
+| `shell` | `shell` field ALWAYS is needed to use with `run` together | `run` | execute the script (these commands specified in `run` fields) in which shell | | 
+
+<details>
+<summary>`shell` field</summary>
+  
+mapping table of available value
+
+| field | available value | description | available platform | notes |
+| :-- | :-- | :-- | :-- | :-- |
+| `shell` | `Bash` | execute the script on `Bash` terminal | <li><ul>`Linux`</ul><ul>macOS</ul><ul>Windows</ul></li> | use `Bash` syntax |
+| `shell` | `sh` | execute the script on shell (which shell be used according to OS version and platform)  | <li><ul>`Linux`</ul><ul>`macOS`</ul><ul>`Windows<`/ul></li> | |
+| `shell` | `pwsh` | execute the script on `Powershell Core` (or called `Powershell 7+`)  | all platform that supports GitHub runner, including<li><ul>`Linux`</ul><ul>`macOS`</ul><ul>`Windows`</ul></li> | |
+| `shell` | `powershell` | execute the script on `Powershell` | <li><ul>`Windows`</ul></li> | as ONLY Windows platform has `Powershell` |
+| `shell` | `cmd` | execute the script on `Windows Command Prompt` | <li><ul>`Windows`</ul></li> | as ONLY Windows platform has `Command Prompt` |
+| `shell` | `python` | execute the script on `python` interpreter | platforms that installs `python` interpreter | If you installs many `python` interpreters, typically, it will use the interpreter that is pointed by `python` system environment variable. |
+
+Default value of `shell` field
+
+According to Google Gemini's response, I take it as a table that
+
+is ordered by default value of `shell` field desc (i.e. from highest priority to lowest priority)
+
+| runner on which platform | default value of `shell` field |
+| `Linux` runner | <li><ul>`bash` (if available)</ul><ul>`sh`</ul></li> | 
+| `macOS` runner | <li><ul>`bash` (if available)</ul><ul>`sh`</ul></li> | 
+| `Windows` runner | <li><ul>`pwsh`</ul></li> | 
+
+Customized shell as template
+
+Format (represented by Regex):
+
+```
+{template} := command {option} {path-of-script} ({more-options})*
+{option} := {running-interpreter} {value-for-running-interpreter}*
+{running-interpreter} := which interpreter which interprets and execute the script
+{flag-for-running-interpreter} := a value for {running-interpreter}
+{path-of-script} := the path will be executed.
+{more-options} := one or more options (In each option, option name and its value)
+
+
+```
+
+</details>
