@@ -38,8 +38,8 @@ here, `<key>` is one key name under `jobs` level.
 | :-- | :-- | :-- | :-- |
 | `runs-on` | one of currently available environment (using enviroment name) | run the task on which environment | No double quotation and single quotation need for environment name | 
 | `steps` | including a block containing lots stpes | defines the task will execute which one or more steps | each step is seperatored by `-` (and MUST be followed a whitespace then `name` key).<br>See my table for more details |
-| `if` | one or more conditions | If the conditions are evaluated true, it will continue to execute the job. Otherwise, it will terminate the job. | <li><ul>The conditions MUST be placed at same line as `if:`</ul></li> |
-| `timeout-minutes` | a postive integer | set the maximum execution time limit of job | <li><ul>The unit is one minute</ul></li> |
+| `if` | one or more conditions | If the conditions are evaluated true, it will continue to execute the job. Otherwise, it will terminate the job. | <ul><li>The conditions MUST be placed at same line as `if:`</li></ul> |
+| `timeout-minutes` | a postive integer | set the maximum execution time limit of job | <ul><li>The unit is one minute</li></ul> |
 | ‵outputs` | a variable or an instance, or an expression consists of them that can be evaluated to a value | returns returned value on job used for other job in this workflow | its usage is same as `outputs` in action, see table in CH5 for more details. | 
 | `needs` | a job name or a list containing job name | depends on the list of job.<br>After all jobs in the list are executed successfully, the job (that uses `needs` field) will be executed. Otherwise, it will NOT be executed | |
 
@@ -48,10 +48,10 @@ At `jobs-><key>->steps` level
 
 | key | value (or content) | description | notice |
 | :-- | :-- | :-- | :-- |
-| `name` | a descriptive name | a descriptive name that displays on Action Log | <li><ul>No double quotation and single quotation need for the descriptive name</ul><ul>You don't have to expand the descriptive name, thus name it descriptive is very helpful for us when tracking Action Log.</ul><ul>MUST be look like this `- name`</ul></li> | 
+| `name` | a descriptive name | a descriptive name that displays on Action Log | <ul><li>No double quotation and single quotation need for the descriptive name</li><li>You don't have to expand the descriptive name, thus name it descriptive is very helpful for us when tracking Action Log.</li><li>MUST be look like this `- name`</li></ul> | 
 | `uses` | action name | import and execute **action** | No double quotation and single quotation need here |
-| `with` | a key-value pair where its value is the version number | which version will be installed or configured (or both)  | <li><ul>The `with` key MUST be used with `uses` tag.<br>And The `uses` key MUST be used with `with` tag if you need to specify the exact version number for installing and configuration.<br>Usually specifies the version number</ul><ul>the version number in the value **MUST be quotated with single quotation**</ul></li> |
-| `run` | a list of commands (used on Windows terminal) | will run these **commands**  | <li><ul>To split commands into multiple line, it is needed to add `|` at the end of `run:`</ul><ul>No double quotation and single quotation here</ul><ul>seperated by new line</ul></li> | 
+| `with` | a key-value pair where its value is the version number | which version will be installed or configured (or both)  | <ul><li>The `with` key MUST be used with `uses` tag.<br>And The `uses` key MUST be used with `with` tag if you need to specify the exact version number for installing and configuration.<br>Usually specifies the version number</li><li>the version number in the value **MUST be quotated with single quotation**</li></ul> |
+| `run` | a list of commands (used on Windows terminal) | will run these **commands**  | <ul><li>To split commands into multiple line, it is needed to add `|` at the end of `run:`</li><li>No double quotation and single quotation here</li><li>seperated by new line</li></ul> | 
 
 
 ### Examples
