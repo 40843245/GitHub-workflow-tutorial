@@ -24,7 +24,7 @@ At `inputs-><input-parameter-name>` level
 | key | value (or content) | description | notice |
 | :-- | :-- | :-- | :-- |
 | `description` | description of the input parameter | see following section | see following section |
-| `required` | boolean value | A boolean value that determines that it is needed to pass the value to this argument when invoking the action.<br><li><ul>True: needed</ul><ul>False: Not needed</ul></li> | defaults to false | 
+| `required` | boolean value | A boolean value that determines that it is needed to pass the value to this argument when invoking the action.<br><ul><li>True: needed</li><li>False: Not needed</li></ul> | defaults to false | 
 | `default` | default value | default value used, when this argument is NOT passed when invoking the action | |
 | `deprecationMessage` | warning message | warning message when this parameter is depreciated | When one pass the value to this argument, a warning message will be written into Action Log |
 
@@ -57,6 +57,3 @@ information (such as description) will be displayed on the installation page.
 A brief and clear description can make it be easilier to understand for searchers and 
 
 even affect the number of downloads.
-
-
-  
