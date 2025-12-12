@@ -123,11 +123,11 @@ mapping table of available value
 
 | field | available value | description | available platform | notes |
 | :-- | :-- | :-- | :-- | :-- |
-| `shell` | `Bash` | execute the script on `Bash` terminal | <li><ul>`Linux`</ul><ul>macOS</ul><ul>Windows</ul></li> | use `Bash` syntax |
-| `shell` | `sh` | execute the script on shell (which shell be used according to OS version and platform)  | <li><ul>`Linux`</ul><ul>`macOS`</ul><ul>`Windows<`/ul></li> | |
-| `shell` | `pwsh` | execute the script on `Powershell Core` (or called `Powershell 7+`)  | all platform that supports GitHub runner, including<li><ul>`Linux`</ul><ul>`macOS`</ul><ul>`Windows`</ul></li> | |
-| `shell` | `powershell` | execute the script on `Powershell` | <li><ul>`Windows`</ul></li> | as ONLY Windows platform has `Powershell` |
-| `shell` | `cmd` | execute the script on `Windows Command Prompt` | <li><ul>`Windows`</ul></li> | as ONLY Windows platform has `Command Prompt` |
+| `shell` | `Bash` | execute the script on `Bash` terminal | <ul><li>`Linux`</li><li>macOS</li><li>Windows</li></ul> | use `Bash` syntax |
+| `shell` | `sh` | execute the script on shell (which shell be used according to OS version and platform)  | <li><li>`Linux`</li><li>`macOS`</li><li>`Windows<`/li></li> | |
+| `shell` | `pwsh` | execute the script on `Powershell Core` (or called `Powershell 7+`)  | all platform that supports GitHub runner, including<ul><li>`Linux`</li><li>`macOS`</li><li>`Windows`</li></ul> | |
+| `shell` | `powershell` | execute the script on `Powershell` | <ul><li>`Windows`</li></ul> | as ONLY Windows platform has `Powershell` |
+| `shell` | `cmd` | execute the script on `Windows Command Prompt` | <ul><li>`Windows`</li></ul> | as ONLY Windows platform has `Command Prompt` |
 | `shell` | `python` | execute the script on `python` interpreter | platforms that installs `python` interpreter | If you installs many `python` interpreters, typically, it will use the interpreter that is pointed by `python` system environment variable. |
 
 Default value of `shell` field
@@ -137,9 +137,9 @@ According to Google Gemini's response, I take it as a table that
 is ordered by default value of `shell` field desc (i.e. from highest priority to lowest priority)
 
 | runner on which platform | default value of `shell` field |
-| `Linux` runner | <li><ul>`bash` (if available)</ul><ul>`sh`</ul></li> | 
-| `macOS` runner | <li><ul>`bash` (if available)</ul><ul>`sh`</ul></li> | 
-| `Windows` runner | <li><ul>`pwsh`</ul></li> | 
+| `Linux` runner | <ul><li>`bash` (if available)</li><li>`sh`</li></ul> | 
+| `macOS` runner | <ul><li>`bash` (if available)</li><li>`sh`</li></ul> | 
+| `Windows` runner | <ul><li>`pwsh`</li></ul> | 
 
 Customized shell as template
 
@@ -161,7 +161,7 @@ Format (represented by Regex):
 
 | available value of `using` field | action type | running enviroment | needed matching word | available scanerio | notes |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| `node20` | JavaScript action | `Node.js` 20 | `main` | <li><ul>For better performance</ul></li>| Javascript script is lightweight and has better performance | 
+| `node20` | JavaScript action | `Node.js` 20 | `main` | <ul><li>For better performance</li></ul>| Javascript script is lightweight and has better performance | 
 | `docker` | Docker container action | Docker containetr | `image` | using Docker | Dockerfile buils a Docker container and a Docker image can run the container |
-| node20 | JavaScript action | `Node.js` 20 | `main` | <li><ul>For better performance</ul></li>| Javascript script is lightweight and has better performance |
+| node20 | JavaScript action | `Node.js` 20 | `main` | <ul><li>For better performance</li></ul>| Javascript script is lightweight and has better performance |
 </details>
