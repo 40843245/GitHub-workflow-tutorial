@@ -64,10 +64,15 @@ In the block about job name, it consists of
   - with (`with` field of job name): pass arguments to the action or workflow that you want to import.
   - needs (`needs` field of job name): depends on one or more specified jobs, ensure this job executes after these jobs are complete.
 
-# on 
+### on 
 `on` field defines which events will trigger this workflow
 
-`on` field can have this fields (all are optional)
+<details>
+<summary>
+Event handlers
+</summary>
+
+`on` field can have this fields (represents event handlers)
 
   Repository Events (that are automatically triggered)
   
@@ -85,3 +90,129 @@ In the block about job name, it consists of
   Manual Events (that are trigger manually or through API)
 
   + `workflow_dispatch`: allow users to manually trigger it on GitHub GUI also allow it is triggered by GitHub API.
+
+  Workflow Communication Events (that allow invocation between workflows)
+
+  + `workflow_call`: mark the workflow as callable.
+  + `workflow_run`: add a queue of workflow stacking trace. Once after specified workflow is completed, it will execute the workflow.
+
+  Interaction Events (that are triggered when specific interaction on Git is met)
+
+  + `issue`: Once the specified issue is CUDed (created, upadated and deleted) or the tag is updated, it will trigger.
+  + `issue_comment`: Once one pull requests on the issue or comments on the issue, it will trigger.
+  + `release`: Once a released is CUDed (created, upadated and deleted), it will trigger.
+
+  External Events (that allow it is triggered externally)
+
+  + `repository_dispatch`: allows it is triggered by external API.
+
+</details>
+
+Additionally, in most event handler, you can set the conditions (i.e. when the conditions are met, it will trigger) by filtering (using subfields of `on` (i.e. a field of event handler))
+
+<details>
+<summary>
+Filters  
+</summary>    
+
+<details>
+<summary>
+`push` event handler
+</summary>
+
+| id | event handler | filter | acceptable value of filter | description | notes |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| 1 | `push` | `branches` | a list containing branch name | **ONLY** applied to specific branches | it uses Regex. |
+| 1 | `push` | `branches-ignore` | a list containing branch name | **NOT** applied to specific branches (opposite of `branches`) | it uses Regex. |
+| 1 | `push` | `tags` | a list containing tag name | **ONLY** applied to specific tags | it uses Regex. |
+| 1 | `push` | `tags-ignore` | a list containing tag name | **NOT** applied to specific branches (opposite of `tags`) | it uses Regex. |
+| 1 | `push` | `paths` | a list containing pathes | **ONLY** applied to specific pathes | it uses Regex. |
+| 1 | `push` | `paths-ignore` | a list containing pathes | **NOT** applied to specific pathes (opposite of `paths`) | it uses Regex. |
+
+</details>
+
+<details>
+<summary>
+`pull_request` event handler
+</summary>
+
+| id | event handler | filter | acceptable value of filter | description | notes |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| 2 | `pull_request` | `branches` | a list containing branch name | **ONLY** applied to specific branches | it uses Regex. |
+| 2 | `pull_request` | `branches-ignore` | a list containing branch name | **NOT** applied to specific branches (opposite of `branches`) | it uses Regex. |
+| 2 | `pull_request` | `tags` | a list containing tag name | **ONLY** applied to specific tags | it uses Regex. |
+| 2 | `pull_request` | `tags-ignore` | a list containing tag name | **NOT** applied to specific branches (opposite of `tags`) | it uses Regex. |
+| 2 | `pull_request` | `paths` | a list containing pathes | **ONLY** applied to specific pathes | it uses Regex. |
+| 2 | `pull_request` | `paths-ignore` | a list containing pathes | **NOT** applied to specific pathes (opposite of `paths`) | it uses Regex. |
+| 2 | `pull_request` | `types` | a list containing type (of search condition to filter pull requests on GitHub) | **ONLY** applied when specific types of operations are met  | it don't use Regex. |
+
+</details>
+
+<details>
+<summary>
+`issue` event handler
+</summary>
+
+| id | event handler | filter | acceptable value of filter | description | notes |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| 3 | `issue` | `types` | a list containing type (of search condition to filter issues on GitHub) | **ONLY** applied when specific types of operations are met | it don't use Regex. |
+
+</details>
+
+<details>
+<summary>
+`release` event handler
+</summary>
+
+| id | event handler | filter | acceptable value of filter | description | notes |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| 4 | `release` | `types` | a list containing type (of search condition to filter releases on GitHub) | **ONLY** applied when specific types of operations are met | it don't use Regex. |
+
+</details>
+
+<details>
+<summary>
+`workflow_call` event handler
+</summary>
+
+| id | event handler | filter | acceptable value of filter | description | notes |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| 5 | `workflow_call` | `inputs` | input parameters | usage is similar to `inputs` in a composite action | see CH6 for more details |
+| 5 | `workflow_call` | `outputs` | output parameters | usage is similar to `outputs` in a composite action | see CH6 for more details |
+
+</details>
+
+<details>
+<summary>
+`workflow_dispatch` event handler
+</summary>
+
+| id | event handler | filter | acceptable value of filter | description | notes |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| 6 | `workflow_dispatch` | `inputs` | input parameters | user has to fill in these inputs when one wants to fill in |  |
+
+At `on->workflow_dispatch->inputs-><input-parameter-name>` level
+
+| key | value (or content) | description | notes |
+| :-- | :-- | :-- | :-- |
+| `description` | description of the input parameter | see following section | see following section |
+| `required` | boolean value | A boolean value that determines that it is needed to pass the value to this argument when invoking the action.<br><li><ul>True: needed</ul><ul>False: Not needed</ul></li> | defaults to false | 
+| `default` | default value | default value used, when this argument is NOT passed when invoking the action | |
+| `type` | see following section | type of the input | |
+| `options` | a list of available option (separated by `-`) | availables options when user choose on the input | |
+
+</details>
+
+<details>
+<summary>
+`schedule` event handler
+</summary>
+
+uses cron syntax to filter.
+
+</details>
+
+</details>
+
+> [IMPORTANT]
+> In `schedule` event handler, you MUST use cron syntax to schedule a schedule at specific time.
