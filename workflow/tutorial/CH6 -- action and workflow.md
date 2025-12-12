@@ -149,8 +149,8 @@ You MUST use the relative path.
 
 The starting point of the relative path is
 
-| scenario | caller | starting point of the relative path (referenced from) | end point (referenced to)|
-| :-- | :-- | :-- |
+| scenario | caller | starting point of the relative path (referenced from) | end point (referenced to) |
+| :-- | :-- | :-- | :-- |
 | a workflow imports a composite action | workflow | root directory of current repo | directory of the file that defines the composite action |
 | an action imports a composite action | a composite action | current working directory (**directory of caller**) (**NOT the file path of callee**) | directory of the file that defines the composite action |
 
