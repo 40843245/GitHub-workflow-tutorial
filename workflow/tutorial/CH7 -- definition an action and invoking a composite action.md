@@ -160,7 +160,7 @@ Format (represented by Regex):
 <summary>`using` field</summary>
 
 | available value of `using` field | action type | running enviroment | needed matching word | available scanerio | notes |
-| :-- | :-- | :-- | :-- | :-- |
+| :-- | :-- | :-- | :-- | :-- | :-- |
 | `node20` | JavaScript action | `Node.js` 20 | `main` | <li><ul>For better performance</ul></li>| Javascript script is lightweight and has better performance | 
 | `docker` | Docker container action | Docker containetr | `image` | using Docker | Dockerfile buils a Docker container and a Docker image can run the container |
 | node20 | JavaScript action | `Node.js` 20 | `main` | <li><ul>For better performance</ul></li>| Javascript script is lightweight and has better performance |
