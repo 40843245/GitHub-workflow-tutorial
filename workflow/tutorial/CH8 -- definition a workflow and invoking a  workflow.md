@@ -69,7 +69,19 @@ In the block about job name, it consists of
 
 `on` field can have this fields (all are optional)
 
-  Optional
+  Repository Events (that are automatically triggered)
   
-  + `push`: once specific commit or a branch is pushed, it will trigger.
-  + 
+  + `push`: once one pushes commits to specific branch or Git Tag, it will trigger.
+  + `pull_request`: once one CUD (create, update, and delete) for PR (pull request), it will trigger.
+  + `pull_request_target`: similar to `pull_request`, but you can set the event handler will be applied to which targeting branch.
+  + `tag`: once new tag is released, it will trigger.
+  + `create`: once one creates branch or Git Tag, it will trigger.
+  + `delete`: once one deletes branch or Git Tag, it will trigger.
+
+  Scheduled Events (that are automatically triggered by schedule)
+
+  + `schedule`: schedules the event. Once the schedule is up, it will trigger.
+
+  Manual Events (that are trigger manually or through API)
+
+  + `workflow_dispatch`: allow users to manually trigger it on GitHub GUI also allow it is triggered by GitHub API.
