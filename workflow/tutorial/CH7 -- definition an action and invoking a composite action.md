@@ -111,7 +111,7 @@ Each run has fields
 
 + mapping tables for matching
 
-| field | needed to use a field together? | which field needed to be used | description | notes |
+| field | needed matching word (with full sentence) | needed matching word | description | notes |
 | :-- | :-- | :-- | :-- | :-- |
 | `uses` | In some case, `use` fields is needed to use `with` field together | `with` | import the action (specified by `uses` field) with passing these argument (specified by `with` field)| According to the definition of the action you want to import |
 | `shell` | `shell` field ALWAYS is needed to use with `run` together | `run` | execute the script (these commands specified in `run` fields) in which shell | | 
@@ -152,8 +152,16 @@ Format (represented by Regex):
 {flag-for-running-interpreter} := a value for {running-interpreter}
 {path-of-script} := the path will be executed.
 {more-options} := one or more options (In each option, option name and its value)
-
-
 ```
 
+</details>
+
+<details>
+<summary>`using` field</summary>
+
+| available value of `using` field | action type | running enviroment | needed matching word | available scanerio | notes |
+| :-- | :-- | :-- | :-- | :-- |
+| `node20` | JavaScript action | `Node.js` 20 | `main` | <li><ul>For better performance</ul></li>| Javascript script is lightweight and has better performance | 
+| `docker` | Docker container action | Docker containetr | `image` | using Docker | Dockerfile buils a Docker container and a Docker image can run the container |
+| node20 | JavaScript action | `Node.js` 20 | `main` | <li><ul>For better performance</ul></li>| Javascript script is lightweight and has better performance |
 </details>
