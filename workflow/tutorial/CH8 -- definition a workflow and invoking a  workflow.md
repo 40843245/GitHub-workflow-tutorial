@@ -184,12 +184,25 @@ Filters
 
 <details>
 <summary>
+`workflow_run` event handler
+</summary>
+
+| id | event handler | filter | acceptable value of filter | description | notes |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| 6 | `workflow_run` | `workflows` | a list of workflow name | when one of these specified workflows is completed, it will trigger. | |
+| 6 | `workflow_run` | `types` | a list of type | ONLY when one of these specified workflows (`workflows` fields) are in the specified status (`workflow_run` field), it will trigger. | |
+| 6 | `workflow_run` | `branches` | a list of branch name | restricts the `workflow_run` event handler listens on these branches | |
+
+</details>
+
+<details>
+<summary>
 `workflow_dispatch` event handler
 </summary>
 
 | id | event handler | filter | acceptable value of filter | description | notes |
 | :-- | :-- | :-- | :-- | :-- | :-- |
-| 6 | `workflow_dispatch` | `inputs` | input parameters | user has to fill in these inputs when one wants to fill in |  |
+| 7 | `workflow_dispatch` | `inputs` | input parameters | user has to fill in these inputs when one wants to fill in |  |
 
 At `on->workflow_dispatch->inputs-><input-parameter-name>` level
 
@@ -200,8 +213,6 @@ At `on->workflow_dispatch->inputs-><input-parameter-name>` level
 | `default` | default value | default value used, when this argument is NOT passed when invoking the action | |
 | `type` | one of following <ul><li>choice</li><li>string</li><li>boolean</li><li>environment</li></ul> | type of the input | |
 | `options` | a list of strings as available option (separated by `-`) | availables options when user choose on the input | <ul><li>It is needed iff `type` is set to `choice`<br>It means</li><li>If the `type` is set to `choice`, the `options` is required.</li><li>If the type is NOT set to `choice`, you can't set this field</li></li>|
-
-
 
 </details>
 
