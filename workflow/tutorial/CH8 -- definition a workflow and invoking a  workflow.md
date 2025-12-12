@@ -13,7 +13,7 @@ A workflow mainly consists of
 
   Required
   
-  - name (`name` field): a descriptive name that will be displayed (on `Description` section) at GitHub Marketplace and will be recognized by GitHub Action. It will be   text on the option when one selects a workflow.
+  - name: a descriptive name that will be displayed (on `Description` section) at GitHub Marketplace and will be recognized by GitHub Action. It will be text on the option when one selects a workflow.
   - on: defines which events will trigger this workflow.
   - jobs: defines a collection of job (or called task)
 
@@ -196,10 +196,12 @@ At `on->workflow_dispatch->inputs-><input-parameter-name>` level
 | key | value (or content) | description | notes |
 | :-- | :-- | :-- | :-- |
 | `description` | description of the input parameter | see following section | see following section |
-| `required` | boolean value | A boolean value that determines that it is needed to pass the value to this argument when invoking the action.<br><li><ul>True: needed</ul><ul>False: Not needed</ul></li> | defaults to false | 
+| `required` | boolean value | A boolean value that determines that it is needed to pass the value to this argument when invoking the action.<br><ul><li>True: needed</li><li>False: Not needed</li></ul> | defaults to false | 
 | `default` | default value | default value used, when this argument is NOT passed when invoking the action | |
-| `type` | see following section | type of the input | |
-| `options` | a list of available option (separated by `-`) | availables options when user choose on the input | |
+| `type` | one of following <ul><li>choice</li><li>string</li><li>boolean</li><li>environment</li></ul> | type of the input | |
+| `options` | a list of strings as available option (separated by `-`) | availables options when user choose on the input | <ul><li>It is needed iff `type` is set to `choice`<br>It means</li><li>If the `type` is set to `choice`, the `options` is required.</li><li>If the type is NOT set to `choice`, you can't set this field</li></li>|
+
+
 
 </details>
 
