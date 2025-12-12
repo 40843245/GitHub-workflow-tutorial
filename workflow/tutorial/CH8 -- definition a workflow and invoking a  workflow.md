@@ -214,5 +214,5 @@ uses cron syntax to filter.
 
 </details>
 
-> [IMPORTANT]
+> [!IMPORTANT]
 > In `schedule` event handler, you MUST use cron syntax to schedule a schedule at specific time.
