@@ -80,8 +80,8 @@ Event handlers
   + `pull_request`: once one CUD (create, update, and delete) for PR (pull request), it will trigger.
   + `pull_request_target`: similar to `pull_request`, but you can set the event handler will be applied to which targeting branch.
   + `tag`: once new tag is released, it will trigger.
-  + `create`: once one creates branch or Git Tag, it will trigger.
-  + `delete`: once one deletes branch or Git Tag, it will trigger.
+  + `create`: once one creates branchs or Git Tag, it will trigger.
+  + `delete`: once one deletes branchs or Git Tag, it will trigger.
 
   Scheduled Events (that are automatically triggered by schedule)
 
@@ -229,3 +229,15 @@ uses cron syntax to filter.
 
 > [!IMPORTANT]
 > In `schedule` event handler, you MUST use cron syntax to schedule a schedule at specific time.
+
+### limitation on event handlers
+#### `on->create`
+> [!NOTE]
+> A `on->create` will not be created when you create more than three tags at once.
+
+#### `on->delete`
+> [!NOTE]
+> A `on->delete` will not be created when you create more than three tags at once.
+
+> [!NOTE]
+> A `on->delete` will trigger a workflow run only if the workflow file exists on the default branch.
