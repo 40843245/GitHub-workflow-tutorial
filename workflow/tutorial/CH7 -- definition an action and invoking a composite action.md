@@ -124,11 +124,11 @@ mapping table of available value
 | field | available value | description | available platform | notes |
 | :-- | :-- | :-- | :-- | :-- |
 | `shell` | `Bash` | execute the script on `Bash` terminal | <ul><li>`Linux`</li><li>macOS</li><li>Windows</li></ul> | use `Bash` syntax |
-| `shell` | `sh` | execute the script on shell (which shell be used according to OS version and platform)  | <li><li>`Linux`</li><li>`macOS`</li><li>`Windows<`/li></li> | |
+| `shell` | `sh` | execute the script on shell (which shell be used according to OS version and platform)  | <ul><li>`Linux`</li><li>`macOS`</li><li>`Windows`</li></ul> | |
 | `shell` | `pwsh` | execute the script on `Powershell Core` (or called `Powershell 7+`)  | all platform that supports GitHub runner, including<ul><li>`Linux`</li><li>`macOS`</li><li>`Windows`</li></ul> | |
 | `shell` | `powershell` | execute the script on `Powershell` | <ul><li>`Windows`</li></ul> | as ONLY Windows platform has `Powershell` |
 | `shell` | `cmd` | execute the script on `Windows Command Prompt` | <ul><li>`Windows`</li></ul> | as ONLY Windows platform has `Command Prompt` |
-| `shell` | `python` | execute the script on `python` interpreter | platforms that installs `python` interpreter | If you installs many `python` interpreters, typically, it will use the interpreter that is pointed by `python` system environment variable. |
+| `shell` | `python` | execute the script on `python` interpreter | platforms that installs `python` interpreter | If you install many `python` interpreters, typically, it will use the interpreter that is pointed by `python` system environment variable. |
 
 Default value of `shell` field
 
